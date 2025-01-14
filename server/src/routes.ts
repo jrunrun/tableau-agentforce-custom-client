@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import { SalesforceSSEConnector } from "./services/sf-sse-connector";
 import {
   messageSchema,
   typingSchema,
@@ -33,8 +32,6 @@ export default async function messagingRoutes(fastify: FastifyInstance) {
     esDeveloperName: process.env.SALESFORCE_DEVELOPER_NAME,
   };
 
-  const sfMessageConnector = new SalesforceSSEConnector(salesforceConfig);
-
   fastify.get(
     "/chat/initialize",
     {
@@ -63,7 +60,7 @@ export default async function messagingRoutes(fastify: FastifyInstance) {
     "/chat/sse",
     { schema: serverSentEventsSchema },
     async (request, reply) =>
-      handleSSEConnection(sfMessageConnector, request, reply)
+      handleSSEConnection(salesforceConfig, request, reply)
   );
 
   fastify.get<MessageRequest>(

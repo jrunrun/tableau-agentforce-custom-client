@@ -18,16 +18,12 @@ export const ChatMessageList = ({
         Failed to load messages. Please try again.
       </div>
     )}
-
-    {isLoading ? (
-      <LoadingContainer align="left" />
-    ) : (
-      <>
-        {messages.map((message) => (
-          <ChatMessage key={message.id} {...message} />
-        ))}
-        <div ref={messagesEndRef} />
-      </>
-    )}
+    <>
+      {messages.map((message) => (
+        <ChatMessage key={message.id} {...message} />
+      ))}
+      {isLoading && <LoadingContainer align="left" />}
+      <div ref={messagesEndRef} />
+    </>
   </div>
 );
