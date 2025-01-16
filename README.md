@@ -1,89 +1,97 @@
-# Agentforce Custom Client Demo
+# Agentforce Custom Chat Client
 
-This is a custom chat interface implementation for the Agentforce Service Agent using Salesforce's Messaging for In-App and Web APIs using React + Typescript.
+A modern React-based chat interface implementation for Salesforce's Messaging for In-App and Web APIs, designed to work with Agentforce Service Agents. Built with React, TypeScript, Tailwind CSS, and Fastify.
 
-Note: You need to create a Custom Client deployment of your Service Agent to get your `SALESFORCE_SCRT_URL` and `SALESFORCE_DEVELOPER_NAME`. To build an agent:
+[🎥 Watch the Demo Video](https://youtu.be/Ip2d_jay7H0?si=W3kMhn1-fKOKAn_X)
 
-1. **Create and deploy your agent.** You can follow along with the [codeLive: How To Set Up Agentforce Service Agent From Scratch
-   ](https://www.youtube.com/live/1vuZfPEtuUM?si=ucN5ToM3flDwSUit) Youtube tutorial or complete the [Configure an Agentforce Service Agent](https://trailhead.salesforce.com/content/learn/projects/quick-start-build-your-first-agent-with-agentforce/configure-an-agentforce-service-agent?trail_id=get-ready-for-agentforce) Trailhead module.
-2. **Create a Custom Client.** [Create a Custom Client](https://help.salesforce.com/s/articleView?id=service.miaw_deployment_custom.htm&type=5) using the messaging channel you created in Step 1.
+![Screenshot of chat interface](./media/custom-client-demo.gif)
+
+## Features
+
+- 💬 Real-time messaging using Server-Sent Events (SSE)
+- 📝 Live typing indicators
+- 🎙️ Voice input support with speech recognition
+- 🌓 Light/dark theme support
+- 📱 Fully responsive design
 
 ## Prerequisites
 
-- Node.js (v20.x)
-- pnpm (v8.x)
-- Salesforce org with Messaging for In-App and Web configured
+- Node.js >= 20.0.0
+- pnpm >= 8.x
+- A Salesforce org with Messaging for In-App and Web configured
+- An Agentforce Service Agent deployment
 
-## Local Development
+## Quick Start
 
-1. Clone and install dependencies:
+1. Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd <repository-url>
+git clone https://github.com/charlesw-salesforce/agentforce-custom-client.git
+cd agentforce-custom-client
+```
+
+2. Install dependencies:
+
+```bash
 pnpm install
 ```
 
-2. Configure environment:
+3. Configure environment variables:
 
 ```bash
 cd server
 cp .env.example .env
 ```
 
-3. Update `.env`:
+Update `.env` with your Salesforce credentials:
 
-```
+```env
 SALESFORCE_SCRT_URL=your-scrt-url
 SALESFORCE_ORG_ID=your-org-id
 SALESFORCE_DEVELOPER_NAME=your-developer-name
 PORT=8080
 ```
 
-4. Start development:
+4. Start development servers:
 
 ```bash
-# In server directory
+# Start both client and server
 pnpm dev
 
-# In client directory (new terminal)
-pnpm dev
-```
-
-Client runs at `http://localhost:5173`, server at `http://localhost:8080`
-
-## Production Build
-
-Build and start:
-
-```bash
-pnpm build
-pnpm start
-```
-
-## Project Structure
-
-```
-agentforce-custom-client/
-├── client/          # React frontend
-├── server/          # Fastify backend
-└── package.json     # Workspace config
+# Or start individually:
+pnpm dev:client   # Client at http://localhost:5173
+pnpm dev:server   # Server at http://localhost:8080
 ```
 
 ## Available Scripts
 
-- `pnpm dev:client` - Start client in dev
-- `pnpm dev:server` - Start backend in dev
-- `pnpm build:client` - Build client and copy to server
-- `pnpm build:server` - Build server
-- `pnpm build` - Build both
+- `pnpm dev` - Start both client and server in development mode
+- `pnpm dev:client` - Start client development server
+- `pnpm dev:server` - Start backend development server
+- `pnpm build` - Build both client and server
 - `pnpm start` - Start production server
 
 ## Environment Variables
 
-Required in `server/.env`:
+### Server
 
-- `SALESFORCE_SCRT_URL` - Salesforce SCRT URL
-- `SALESFORCE_ORG_ID` - Salesforce Org ID
-- `SALESFORCE_DEVELOPER_NAME` - Salesforce Developer Name
-- `PORT` - Server port (default: 8080)
+| Variable                    | Description                 | Required |
+| --------------------------- | --------------------------- | -------- |
+| `SALESFORCE_SCRT_URL`       | Salesforce SCRT URL         | Yes      |
+| `SALESFORCE_ORG_ID`         | Salesforce Organization ID  | Yes      |
+| `SALESFORCE_DEVELOPER_NAME` | Salesforce Developer Name   | Yes      |
+| `PORT`                      | Server port (default: 8080) | No       |
+
+### Client
+
+| Variable       | Description     | Required |
+| -------------- | --------------- | -------- |
+| `VITE_API_URL` | Backend API URL | Yes      |
+
+## Setting Up Your Salesforce Organization
+
+1. Create and deploy an Agentforce Service Agent ([video tutorial](https://www.youtube.com/live/1vuZfPEtuUM?si=lQKYsVE9PQrEICNA))
+2. [Create a Custom Client](https://help.salesforce.com/s/articleView?id=service.miaw_deployment_custom.htm&type=5) deployment using your messaging channel
+3. Copy the SCRT URL, Org ID, and Developer Name to your `.env` file
+
+For detailed setup instructions, follow the [Salesforce documentation](https://help.salesforce.com/s/articleView?id=service.miaw_deployment_custom.htm&type=5).
