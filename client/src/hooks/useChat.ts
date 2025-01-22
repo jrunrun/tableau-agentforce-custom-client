@@ -18,6 +18,7 @@ export function useChat() {
     conversationId: string;
   } | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitializedRef = useRef(false);
 
   const {
     initialize,
@@ -217,6 +218,9 @@ export function useChat() {
   };
 
   useEffect(() => {
+    if (isInitializedRef.current) return;
+    isInitializedRef.current = true;
+
     const cleanupEventSource = (eventSource: EventSource) => {
       eventSource.removeEventListener("CONVERSATION_MESSAGE", handleMessage);
       eventSource.removeEventListener(
