@@ -58,19 +58,24 @@ export function useChat() {
     (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
+        console.log('Received event data:', data);
+        
         const sender = data.conversationEntry.sender.role.toLowerCase();
         if (sender === "chatbot") {
           setIsTyping(false);
           const payload = JSON.parse(data.conversationEntry.entryPayload);
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: payload.abstractMessage.id,
-              type: "ai",
-              content: payload.abstractMessage.staticContent.text,
-              timestamp: new Date(data.conversationEntry.clientTimestamp),
-            },
-          ]);
+          console.log('New message:', {
+            sender,
+            content: payload.abstractMessage.staticContent.text,
+            timestamp: new Date(data.conversationEntry.clientTimestamp)
+          });
+          
+          setMessages((prev) => [...prev, {
+            id: payload.abstractMessage.id,
+            type: "ai",
+            content: payload.abstractMessage.staticContent.text,
+            timestamp: new Date(data.conversationEntry.clientTimestamp),
+          }]);
           setIsLoading(false);
           resetTimeout();
         }
@@ -255,6 +260,10 @@ export function useChat() {
     handleMessage,
     handleParticipantChange,
   ]);
+
+  useEffect(() => {
+    console.log('Current messages:', messages);
+  }, [messages]);
 
   return {
     messages,

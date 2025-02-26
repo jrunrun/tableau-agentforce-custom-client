@@ -1,6 +1,7 @@
 import { FastifyRequest } from "fastify";
 import { BaseMessageRequest, MessageRequest, SalesforceConfig } from "../types";
 import axios from "axios";
+import crypto from "crypto";
 
 export async function handleSendMessage(
   salesforceConfig: SalesforceConfig,

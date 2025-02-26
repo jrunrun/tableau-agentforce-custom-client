@@ -33,48 +33,62 @@ export const ChatMessage: React.FC<Message> = ({ type, content, timestamp }) => 
         ${type === 'user' ? styles.messageBubble.user : styles.messageBubble.ai}
       `}>
         <div className="prose-sm max-w-full text-sm break-words">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              a: ({ ...props }) => (
-                <a
-                  {...props}
-                  className={`
-                    ${type === 'user'
-                      ? 'text-emerald-200 hover:text-emerald-100'
-                      : 'text-emerald-600 hover:text-emerald-800'
-                    } underline
-                  `}
-                  target="_blank"
-                  rel="noopener noreferrer"
+          {content.split(/(<svg.*?<\/svg>)/s).map((part, index) => {
+            if (part.trim().startsWith('<svg') && part.trim().endsWith('</svg>')) {
+              return (
+                <div 
+                  key={index}
+                  className="flex justify-center my-2"
+                  dangerouslySetInnerHTML={{ __html: part }} 
                 />
-              ),
-              code: ({ ...props }) => (
-                <code
-                  {...props}
-                  className={`
-                    ${type === 'user'
-                      ? 'bg-opacity-20 bg-black text-current'
-                      : 'bg-gray-100 text-gray-800'
-                    } rounded px-1 py-0.5 text-xs
-                  `}
-                />
-              ),
-              pre: ({ ...props }) => (
-                <pre
-                  {...props}
-                  className={`
-                    ${type === 'user'
-                      ? 'bg-opacity-20 bg-black text-current'
-                      : 'bg-gray-100 text-gray-800'
-                    } rounded p-2 text-xs overflow-x-auto
-                  `}
-                />
-              )
-            }}
-          >
-            {content}
-          </ReactMarkdown>
+              );
+            }
+            return (
+              <ReactMarkdown
+                key={index}
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  a: ({ ...props }) => (
+                    <a
+                      {...props}
+                      className={`
+                        ${type === 'user'
+                          ? 'text-emerald-200 hover:text-emerald-100'
+                          : 'text-emerald-600 hover:text-emerald-800'
+                        } underline
+                      `}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  code: ({ ...props }) => (
+                    <code
+                      {...props}
+                      className={`
+                        ${type === 'user'
+                          ? 'bg-opacity-20 bg-black text-current'
+                          : 'bg-gray-100 text-gray-800'
+                        } rounded px-1 py-0.5 text-xs
+                      `}
+                    />
+                  ),
+                  pre: ({ ...props }) => (
+                    <pre
+                      {...props}
+                      className={`
+                        ${type === 'user'
+                          ? 'bg-opacity-20 bg-black text-current'
+                          : 'bg-gray-100 text-gray-800'
+                        } rounded p-2 text-xs overflow-x-auto
+                      `}
+                    />
+                  )
+                }}
+              >
+                {part}
+              </ReactMarkdown>
+            );
+          })}
         </div>
         <div className="mt-2 flex justify-end items-center space-x-2">
           <span className={`text-xs opacity-60`}>
