@@ -35,7 +35,7 @@ export const themeConfig: ThemeConfig = {
     },
   },
   light: {
-    primary: "bg-teal-600",
+    primary: "bg-[#183E3A]",
     primaryHover: "hover:bg-teal-700",
     primaryText: "text-white",
     secondary: "bg-teal-50",
