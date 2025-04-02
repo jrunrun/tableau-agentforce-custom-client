@@ -82,7 +82,7 @@ export function useSalesforceMessaging(): MessagingHookReturn {
       }
 
       return createEventSource({
-        url: `https://${SCRT_URL}/eventrouter/v1/sse`,
+        url: `${SCRT_URL}/eventrouter/v1/sse`,
         headers: {
           Accept: "text/event-stream",
           Authorization: `Bearer ${token}`,
