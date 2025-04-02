@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "NODE_OPTIONS=--max-old-space-size=512 tsc -b && vite build",
-    "start": "vite preview --host 0.0.0.0 --port $PORT",
+    "start": "serve dist -s -l $PORT",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -22,7 +22,8 @@
     "react-icons": "^5.4.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^7.1.1",
-    "remark-gfm": "^4.0.0"
+    "remark-gfm": "^4.0.0",
+    "serve": "^14.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
