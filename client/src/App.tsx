@@ -4,8 +4,6 @@ import {
   ChatMinimized,
   ChatErrorBoundary,
 } from "./components/chat";
-import { GitHubLink } from "./components/GitHubLink";
-import ContentLayout from "./components/ContentLayout";
 import ThemeProvider from "./contexts/ThemeContext";
 
 const AppContent: React.FC = () => {

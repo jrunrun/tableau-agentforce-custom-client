@@ -181,20 +181,6 @@ export function useChat() {
     }
   }, [initialize, setupEventSource, isLoading, resetTimeout, handleMessage, handleParticipantChange]);
 
-  const setupEventHandlers = useCallback(
-    (events: ReturnType<typeof createEventSource>) => {
-      // Handle connection state changes
-      if (events.readyState === "open") {
-        setIsConnected(true);
-        setError(null);
-        resetTimeout();
-      } else if (events.readyState === "closed") {
-        setIsConnected(false);
-      }
-    },
-    [resetTimeout]
-  );
-
   const sendMessage = async (content: string) => {
     if (!credsRef.current) return;
     resetTimeout();
