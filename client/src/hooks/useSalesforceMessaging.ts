@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+  import.meta.env.VITE_API_URL || "https://tableau-agentforce-custom-client-production.up.railway.app/api";
 
 interface MessagingCredentials {
   accessToken: string;
