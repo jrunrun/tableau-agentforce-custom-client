@@ -42,7 +42,7 @@ async function start() {
       return reply.sendFile("index.html");
     });
 
-    await server.listen({ port: 8080 });
+    await server.listen({ port: 8080, host: "0.0.0.0" });
     console.log("Server running at http://localhost:8080");
   } catch (err) {
     server.log.error(err);
