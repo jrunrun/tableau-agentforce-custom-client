@@ -11,7 +11,7 @@ export async function handleSendMessage(
   const token = request.headers.authorization.split(" ")[1];
 
   await axios.post(
-    `https://${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}/message`,
+    `${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}/message`,
     {
       message: {
         id: crypto.randomUUID(),
@@ -45,7 +45,7 @@ export async function handleGetMessages(
   const conversationId = request.headers["x-conversation-id"];
 
   const response = await axios.get(
-    `https://${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}/entries`,
+    `${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}/entries`,
     {
       headers: { Authorization: `Bearer ${token}` },
       params: {

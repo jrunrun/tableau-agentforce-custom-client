@@ -10,7 +10,7 @@ export async function handleEndChat(
   const conversationId = request.headers["x-conversation-id"];
 
   await axios.delete(
-    `https://${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}?esDeveloperName=${salesforceConfig.esDeveloperName}`,
+    `${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}?esDeveloperName=${salesforceConfig.esDeveloperName}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }

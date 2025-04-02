@@ -7,6 +7,9 @@ import messagingRoutes from "./routes.js";
 
 dotenv.config();
 
+const PORT = parseInt(process.env.PORT || "8080", 10);
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
+
 const server = fastify({
   logger: true,
 });
@@ -19,9 +22,7 @@ async function start() {
     });
 
     await server.register(cors, {
-      // TODO: change to the production origin
-      origin: ["http://localhost:5173"],
-      // origin: ["http://localhost:3000"],
+      origin: [ALLOWED_ORIGIN],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
       credentials: true,
       allowedHeaders: [
@@ -42,8 +43,8 @@ async function start() {
       return reply.sendFile("index.html");
     });
 
-    await server.listen({ port: 8080 });
-    console.log("Server running at http://localhost:8080");
+    await server.listen({ port: PORT });
+    console.log(`Server running at http://localhost:${PORT}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

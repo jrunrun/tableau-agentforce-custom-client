@@ -11,7 +11,7 @@ export async function handleInitialize(salesforceConfig: SalesforceConfig) {
   });
 
   const tokenResponse = await axios.post(
-    `https://${salesforceConfig.scrtUrl}/iamessage/api/v2/authorization/unauthenticated/access-token`,
+    `${salesforceConfig.scrtUrl}/iamessage/api/v2/authorization/unauthenticated/access-token`,
     {
       orgId: salesforceConfig.orgId,
       esDeveloperName: salesforceConfig.esDeveloperName,
@@ -36,7 +36,7 @@ export async function handleInitialize(salesforceConfig: SalesforceConfig) {
   console.log('Generated conversation ID:', conversationId);
 
   await axios.post(
-    `https://${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation`,
+    `${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation`,
     {
       conversationId,
       esDeveloperName: salesforceConfig.esDeveloperName,

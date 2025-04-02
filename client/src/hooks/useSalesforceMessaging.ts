@@ -1,11 +1,21 @@
 import { useCallback } from "react";
+import { createEventSource } from "eventsource-client";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
+const SCRT_URL = import.meta.env.VITE_SCRT_URL;
+const ORG_ID = import.meta.env.VITE_ORG_ID;
+
 interface MessagingCredentials {
   accessToken: string;
   conversationId: string;
+}
+
+interface EventSourceMessage {
+  data: string;
+  event?: string;
+  id?: string;
 }
 
 interface MessagingHookReturn {
@@ -16,7 +26,10 @@ interface MessagingHookReturn {
     content: string
   ) => Promise<void>;
   closeChat: (token: string, conversationId: string) => Promise<void>;
-  setupEventSource: (token: string) => EventSource;
+  setupEventSource: (
+    token: string,
+    onMessage?: (message: EventSourceMessage) => void
+  ) => ReturnType<typeof createEventSource>;
 }
 
 export function useSalesforceMessaging(): MessagingHookReturn {
@@ -62,11 +75,24 @@ export function useSalesforceMessaging(): MessagingHookReturn {
     []
   );
 
-  const setupEventSource = useCallback((token: string): EventSource => {
-    return new EventSource(`${API_BASE_URL}/chat/sse?token=${token}`, {
-      withCredentials: true,
-    });
-  }, []);
+  const setupEventSource = useCallback(
+    (token: string, onMessage?: (message: EventSourceMessage) => void) => {
+      if (!SCRT_URL || !ORG_ID) {
+        throw new Error("SCRT URL and Org ID must be configured in environment variables");
+      }
+
+      return createEventSource({
+        url: `https://${SCRT_URL}/eventrouter/v1/sse`,
+        headers: {
+          Accept: "text/event-stream",
+          Authorization: `Bearer ${token}`,
+          "X-Org-Id": ORG_ID,
+        },
+        onMessage,
+      });
+    },
+    []
+  );
 
   return {
     initialize,

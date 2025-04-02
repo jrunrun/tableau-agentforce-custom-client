@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Entry, Message } from "../types";
 import { useSalesforceMessaging } from "./useSalesforceMessaging";
+import { createEventSource } from "eventsource-client";
+
+interface EventSourceMessage {
+  data: string;
+  event?: string;
+  id?: string;
+}
 
 const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
@@ -12,7 +19,7 @@ export function useChat() {
   const [currentAgent, setCurrentAgent] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const eventSourceRef = useRef<ReturnType<typeof createEventSource> | null>(null);
   const credsRef = useRef<{
     accessToken: string;
     conversationId: string;
@@ -55,9 +62,8 @@ export function useChat() {
   }, [isConnected, closeChatApi]);
 
   const handleMessage = useCallback(
-    (event: MessageEvent) => {
+    (data: any) => {
       try {
-        const data = JSON.parse(event.data);
         console.log('Received event data:', data);
         
         const sender = data.conversationEntry.sender.role.toLowerCase();
@@ -86,8 +92,7 @@ export function useChat() {
     [resetTimeout]
   );
 
-  const handleParticipantChange = useCallback((event: MessageEvent) => {
-    const data = JSON.parse(event.data);
+  const handleParticipantChange = useCallback((data: any) => {
     const entries = JSON.parse(data.conversationEntry.entryPayload).entries;
 
     entries.forEach((entry: Entry) => {
@@ -121,32 +126,6 @@ export function useChat() {
     });
   }, []);
 
-  const setupEventHandlers = useCallback(
-    (events: EventSource) => {
-      events.onopen = () => {
-        setIsConnected(true);
-        setError(null);
-        resetTimeout();
-      };
-
-      events.onerror = () => setIsConnected(false);
-
-      events.addEventListener("CONVERSATION_MESSAGE", handleMessage);
-      events.addEventListener(
-        "CONVERSATION_PARTICIPANT_CHANGED",
-        handleParticipantChange
-      );
-      events.addEventListener("CONVERSATION_TYPING_STARTED_INDICATOR", () => {
-        if (!isLoading) setIsTyping(true);
-        resetTimeout();
-      });
-      events.addEventListener("CONVERSATION_TYPING_STOPPED_INDICATOR", () => {
-        setIsTyping(false);
-      });
-    },
-    [isLoading, resetTimeout, handleMessage, handleParticipantChange]
-  );
-
   const startChat = useCallback(async () => {
     try {
       if (eventSourceRef.current) {
@@ -162,15 +141,58 @@ export function useChat() {
       const creds = await initialize();
       credsRef.current = creds;
 
-      const events = setupEventSource(creds.accessToken);
+      const events = setupEventSource(creds.accessToken, ({ data, event }: EventSourceMessage) => {
+        try {
+          const parsedData = JSON.parse(data);
+          switch (event) {
+            case "CONVERSATION_MESSAGE":
+              handleMessage(parsedData);
+              break;
+            case "CONVERSATION_PARTICIPANT_CHANGED":
+              handleParticipantChange(parsedData);
+              break;
+            case "CONVERSATION_TYPING_STARTED_INDICATOR":
+              if (!isLoading) setIsTyping(true);
+              resetTimeout();
+              break;
+            case "CONVERSATION_TYPING_STOPPED_INDICATOR":
+              setIsTyping(false);
+              break;
+          }
+        } catch (err) {
+          console.error("Error parsing event data:", err);
+        }
+      });
       eventSourceRef.current = events;
-      setupEventHandlers(events);
+
+      // Handle connection state changes
+      if (events.readyState === "open") {
+        setIsConnected(true);
+        setError(null);
+        resetTimeout();
+      } else if (events.readyState === "closed") {
+        setIsConnected(false);
+      }
     } catch (err) {
       console.error("Chat initialization error:", err);
       setError("Failed to start chat");
       setIsConnected(false);
     }
-  }, [initialize, setupEventSource, setupEventHandlers]);
+  }, [initialize, setupEventSource, isLoading, resetTimeout, handleMessage, handleParticipantChange]);
+
+  const setupEventHandlers = useCallback(
+    (events: ReturnType<typeof createEventSource>) => {
+      // Handle connection state changes
+      if (events.readyState === "open") {
+        setIsConnected(true);
+        setError(null);
+        resetTimeout();
+      } else if (events.readyState === "closed") {
+        setIsConnected(false);
+      }
+    },
+    [resetTimeout]
+  );
 
   const sendMessage = async (content: string) => {
     if (!credsRef.current) return;
@@ -226,26 +248,7 @@ export function useChat() {
     if (isInitializedRef.current) return;
     isInitializedRef.current = true;
 
-    const cleanupEventSource = (eventSource: EventSource) => {
-      eventSource.removeEventListener("CONVERSATION_MESSAGE", handleMessage);
-      eventSource.removeEventListener(
-        "HANDLE_PARTICIPANT_CHANGE",
-        handleParticipantChange
-      );
-      eventSource.removeEventListener(
-        "CONVERSATION_TYPING_STARTED_INDICATOR",
-        () => {
-          if (!isLoading) setIsTyping(true);
-          resetTimeout();
-        }
-      );
-      eventSource.removeEventListener(
-        "CONVERSATION_TYPING_STOPPED_INDICATOR",
-        () => {
-          setIsTyping(false);
-        }
-      );
-
+    const cleanupEventSource = (eventSource: ReturnType<typeof createEventSource>) => {
       eventSource.close();
     };
     startChat();

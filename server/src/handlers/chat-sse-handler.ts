@@ -11,7 +11,7 @@ export async function handleSSEConnection(
   const { token } = request.query;
   const { esDeveloperName, scrtUrl, orgId } = salesforceConfig;
 
-  const sseResponse = await fetch(`https://${scrtUrl}/eventrouter/v1/sse`, {
+  const sseResponse = await fetch(`${scrtUrl}/eventrouter/v1/sse`, {
     headers: {
       Accept: "text/event-stream",
       Authorization: `Bearer ${token}`,
