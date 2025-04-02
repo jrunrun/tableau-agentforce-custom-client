@@ -34,7 +34,7 @@ export async function handleSSEConnection(
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
-      Connection: "keep-alive",
+      "Connection": "keep-alive",
       // "Access-Control-Allow-Origin": "http://localhost:5173",
       "Access-Control-Allow-Origin": "https://tableau-agentforce-custom-client-production.up.railway.app",
       "Access-Control-Allow-Credentials": "true",
