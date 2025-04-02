@@ -35,8 +35,8 @@ export const themeConfig: ThemeConfig = {
     },
   },
   light: {
-    primary: "bg-[#183E3A]",
-    primaryHover: "hover:bg-teal-700",
+    primary: "bg-[#D9757F]",
+    primaryHover: "hover:bg-[#82464C]",
     primaryText: "text-white",
     secondary: "bg-teal-50",
     secondaryHover: "hover:bg-teal-100",
@@ -44,7 +44,7 @@ export const themeConfig: ThemeConfig = {
     border: "border-teal-100",
     inputBg: "bg-white",
     messageBubble: {
-      user: "bg-teal-600 text-white border border-teal-500",
+      user: "bg-[#D9757F] text-white",
       ai: "bg-gray-100 text-gray-800 border border-gray-200",
       system: "bg-slate-200 text-slate-700 border border-gray-200",
     },
