@@ -20,7 +20,7 @@ async function start() {
 
     await server.register(cors, {
       // TODO: change to the production origin
-      origin: ["http://localhost:5173"],
+      origin: ["http://localhost:5173", "https://tableau-agentforce-custom-client-production.up.railway.app"],
       // origin: ["http://localhost:3000"],
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
       credentials: true,
