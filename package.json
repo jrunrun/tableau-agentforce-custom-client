@@ -19,7 +19,7 @@
     "dev": "pnpm dev:server & pnpm dev:client",
     "build:client": "tsc && cd client && pnpm build && cp -r dist ../server/",
     "build:server": "cd server && tsc",
-    "build": "pnpm build:client & pnpm build:server",
+    "build": "pnpm build:client && pnpm build:server",
     "start": "cd server && node dist/index.js"
   },
   "keywords": [],
