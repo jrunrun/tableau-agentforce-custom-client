@@ -4,12 +4,6 @@ import crypto from "node:crypto";
 import { SalesforceConfig } from "../types";
 
 export async function handleInitialize(salesforceConfig: SalesforceConfig) {
-  console.log('Initializing chat with config:', {
-    orgId: salesforceConfig.orgId,
-    esDeveloperName: salesforceConfig.esDeveloperName,
-    scrtUrl: salesforceConfig.scrtUrl
-  });
-
   const tokenResponse = await axios.post(
     `${salesforceConfig.scrtUrl}/iamessage/api/v2/authorization/unauthenticated/access-token`,
     {
