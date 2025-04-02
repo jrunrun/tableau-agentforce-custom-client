@@ -8,6 +8,7 @@ import messagingRoutes from "./routes.js";
 dotenv.config();
 
 const PORT = parseInt(process.env.PORT || "8080", 10);
+const HOST = process.env.HOST || "0.0.0.0";
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "http://localhost:5173";
 
 const server = fastify({
@@ -43,8 +44,8 @@ async function start() {
       return reply.sendFile("index.html");
     });
 
-    await server.listen({ port: PORT });
-    console.log(`Server running at http://localhost:${PORT}`);
+    await server.listen({ port: PORT, host: HOST });
+    console.log(`Server running at http://${HOST}:${PORT}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);
