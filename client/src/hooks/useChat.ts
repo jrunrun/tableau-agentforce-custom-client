@@ -83,6 +83,7 @@ export function useChat() {
             timestamp: new Date(data.conversationEntry.clientTimestamp),
           }]);
           setIsLoading(false);
+          setIsConnected(true);
           resetTimeout();
         }
       } catch (err) {
