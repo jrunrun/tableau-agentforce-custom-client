@@ -35,11 +35,11 @@ export const AnimatedChatContainer: React.FC<AnimatedChatContainerProps> = ({
         >
           <div
             className={`
-              bg-white flex flex-col
+              bg-white flex flex-col overflow-hidden
               ${
                 isMobile
                   ? "w-full h-full"
-                  : "rounded-xl shadow-2xl w-full h-full"
+                  : "rounded-xl shadow-2xl w-full h-full [border-radius:12px]"
               }
             `}
           >
