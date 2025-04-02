@@ -46,6 +46,12 @@ export async function handleSSEConnection(
     streamableResponse.body as unknown as ReadableStream
   );
 
+  // Set headers explicitly in the reply
+  reply.header("Connection", "keep-alive");
+  reply.header("Content-Type", "text/event-stream");
+  reply.header("Cache-Control", "no-cache");
+  
+  console.log("Setting SSE headers:", streamableResponse.headers);
   reply.raw.writeHead(200, streamableResponse.headers);
 
   request.raw.on("close", () => nodeStream.destroy());
