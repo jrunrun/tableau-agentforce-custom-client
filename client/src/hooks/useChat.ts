@@ -127,7 +127,29 @@ export function useChat() {
     });
   }, []);
 
-  const startChat = useCallback(async () => {
+  const closeChat = async (onClosed: () => void) => {
+    try {
+      if (!credsRef.current) return;
+
+      await closeChatApi(
+        credsRef.current.accessToken,
+        credsRef.current.conversationId
+      );
+
+      setIsConnected(false);
+      setIsTyping(false);
+      setCurrentAgent(null);
+      setMessages([]);
+      setIsLoading(false);
+      setError(null);
+      onClosed();
+    } catch (err) {
+      console.error("Failed to close chat:", err);
+      setError("Failed to close chat");
+    }
+  };
+
+  const startNewChat = useCallback(async () => {
     try {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
@@ -143,6 +165,7 @@ export function useChat() {
       credsRef.current = creds;
 
       const events = setupEventSource(creds.accessToken, ({ data, event }: EventSourceMessage) => {
+        console.log('Received event:', { data, event });
         try {
           const parsedData = JSON.parse(data);
           switch (event) {
@@ -153,7 +176,7 @@ export function useChat() {
               handleParticipantChange(parsedData);
               break;
             case "CONVERSATION_TYPING_STARTED_INDICATOR":
-              if (!isLoading) setIsTyping(true);
+              setIsTyping(true);
               resetTimeout();
               break;
             case "CONVERSATION_TYPING_STOPPED_INDICATOR":
@@ -166,7 +189,6 @@ export function useChat() {
       });
       eventSourceRef.current = events;
 
-      // Handle connection state changes
       if (events.readyState === "open") {
         setIsConnected(true);
         setError(null);
@@ -179,7 +201,21 @@ export function useChat() {
       setError("Failed to start chat");
       setIsConnected(false);
     }
-  }, [initialize, setupEventSource, isLoading, resetTimeout, handleMessage, handleParticipantChange]);
+  }, [initialize, setupEventSource, handleMessage, handleParticipantChange, resetTimeout]);
+
+  useEffect(() => {
+    if (isInitializedRef.current) return;
+    isInitializedRef.current = true;
+
+    startNewChat();
+    return () => {
+      if (eventSourceRef.current) {
+        console.log('Closing event source');
+        eventSourceRef.current.close();
+      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const sendMessage = async (content: string) => {
     if (!credsRef.current) return;
@@ -209,48 +245,6 @@ export function useChat() {
     }
   };
 
-  const closeChat = async (onClosed: () => void) => {
-    try {
-      if (!credsRef.current) return;
-
-      await closeChatApi(
-        credsRef.current.accessToken,
-        credsRef.current.conversationId
-      );
-
-      setIsConnected(false);
-      setIsTyping(false);
-      setCurrentAgent(null);
-      setMessages([]);
-      setIsLoading(false);
-      setError(null);
-      onClosed();
-    } catch (err) {
-      console.error("Failed to close chat:", err);
-      setError("Failed to close chat");
-    }
-  };
-
-  useEffect(() => {
-    if (isInitializedRef.current) return;
-    isInitializedRef.current = true;
-
-    const cleanupEventSource = (eventSource: ReturnType<typeof createEventSource>) => {
-      eventSource.close();
-    };
-    startChat();
-    return () => {
-      if (eventSourceRef.current) cleanupEventSource(eventSourceRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [
-    startChat,
-    isLoading,
-    resetTimeout,
-    handleMessage,
-    handleParticipantChange,
-  ]);
-
   useEffect(() => {
     console.log('Current messages:', messages);
   }, [messages]);
@@ -264,6 +258,6 @@ export function useChat() {
     error,
     sendMessage,
     closeChat,
-    startNewChat: startChat,
+    startNewChat,
   };
 }
