@@ -46,11 +46,11 @@ export const ChatHeader = ({
           </div>
         ) : (
           <>
-            <h2
-              className={`text-lg sm:text-xl font-serif ${styles.primaryText}`}
-            >
-              {agentName}
-            </h2>
+            <img
+              src="/dcg_Logo-white.svg"
+              alt="DCG Logo"
+              className="h-8 sm:h-10"
+            />
             <p
               className={`text-xs sm:text-sm ${styles.primaryText} opacity-75`}
             >
