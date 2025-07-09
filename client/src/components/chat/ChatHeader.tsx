@@ -103,7 +103,7 @@ export const ChatHeader = ({
 
           <DropdownItem
             onClick={onClose}
-            className="text-red-600 hover:bg-red-50"
+            className="text-gray-600 hover:bg-gray-50"
           >
             <div className="flex items-center gap-2">
               <X className="w-4 h-4" />
