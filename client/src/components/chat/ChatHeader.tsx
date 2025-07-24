@@ -47,7 +47,7 @@ export const ChatHeader = ({
         ) : (
           <>
             <img
-              src="/dcg_Logo-white.svg"
+              src="/skyline-wealthmgt.svg"
               alt="DCG Logo"
               className="h-8 sm:h-10"
             />
