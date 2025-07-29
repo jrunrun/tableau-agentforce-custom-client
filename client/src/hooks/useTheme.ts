@@ -36,7 +36,7 @@ export const themeConfig: ThemeConfig = {
   },
   light: {
     primary: "bg-[#1F4973]",
-    primaryHover: "hover:bg-[#1a1a1b]",
+    primaryHover: "hover:bg-[#1F4973]",
     primaryText: "text-white",
     secondary: "bg-gray-50",
     secondaryHover: "hover:bg-gray-100",
