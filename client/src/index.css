@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-img[src="/skyline-wealthmgt.svg"] {
+img[src="/penfed-logo-sidebar.svg"] {
     filter: brightness(0) invert(1);
 }
