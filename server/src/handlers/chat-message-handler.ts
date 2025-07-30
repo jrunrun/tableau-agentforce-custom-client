@@ -1,7 +1,7 @@
 import { FastifyRequest } from "fastify";
 import { BaseMessageRequest, MessageRequest, SalesforceConfig } from "../types";
 import axios from "axios";
-import crypto from "crypto";
+import { generateUUID } from "../utils/uuid";
 
 export async function handleSendMessage(
   salesforceConfig: SalesforceConfig,
@@ -14,7 +14,7 @@ export async function handleSendMessage(
     `${salesforceConfig.scrtUrl}/iamessage/api/v2/conversation/${conversationId}/message`,
     {
       message: {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         messageType: "StaticContentMessage",
         staticContent: {
           formatType: "Text",

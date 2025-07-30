@@ -1,7 +1,6 @@
 import axios from "axios";
-// import crypto from "crypto";
-import crypto from "node:crypto";
 import { SalesforceConfig } from "../types";
+import { generateUUID } from "../utils/uuid";
 
 export async function handleInitialize(salesforceConfig: SalesforceConfig) {
   const tokenResponse = await axios.post(
@@ -25,7 +24,7 @@ export async function handleInitialize(salesforceConfig: SalesforceConfig) {
 
   const accessToken = tokenResponse.data.accessToken;
   const lastEventId = tokenResponse.data.lastEventId;
-  const conversationId = crypto.randomUUID().toLowerCase();
+  const conversationId = generateUUID().toLowerCase();
 
   console.log('Generated conversation ID:', conversationId);
 

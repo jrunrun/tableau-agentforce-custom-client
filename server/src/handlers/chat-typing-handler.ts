@@ -1,6 +1,7 @@
 import { FastifyRequest } from "fastify";
 import { SalesforceConfig, TypingRequest } from "../types";
 import axios from "axios";
+import { generateUUID } from "../utils/uuid";
 
 export async function handleTypingIndicator(
   salesforceConfig: SalesforceConfig,
@@ -17,7 +18,7 @@ export async function handleTypingIndicator(
         entryType: isTyping
           ? "TypingStartedIndicator"
           : "TypingStoppedIndicator",
-        id: crypto.randomUUID(),
+        id: generateUUID(),
       },
       {
         headers: { Authorization: `Bearer ${token}` },

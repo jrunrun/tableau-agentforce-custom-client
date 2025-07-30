@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Entry, Message } from "../types";
 import { useSalesforceMessaging } from "./useSalesforceMessaging";
 import { createEventSource } from "eventsource-client";
+import { generateUUID } from "../utils/uuid";
 
 interface EventSourceMessage {
   data: string;
@@ -49,7 +50,7 @@ export function useChat() {
         setMessages((prev) => [
           ...prev,
           {
-            id: crypto.randomUUID(),
+            id: generateUUID(),
             type: "system",
             content: "Chat ended due to inactivity",
             timestamp: new Date(),
@@ -105,7 +106,7 @@ export function useChat() {
         setMessages((prev) => [
           ...prev,
           {
-            id: crypto.randomUUID(),
+            id: generateUUID(),
             type: "system",
             content: `${entry.displayName} has joined the chat`,
             timestamp: new Date(),
@@ -117,7 +118,7 @@ export function useChat() {
         setMessages((prev) => [
           ...prev,
           {
-            id: crypto.randomUUID(),
+            id: generateUUID(),
             type: "system",
             content: `${entry.displayName} has left the chat`,
             timestamp: new Date(),
@@ -222,7 +223,7 @@ export function useChat() {
     resetTimeout();
 
     const message = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       type: "user" as const,
       content,
       timestamp: new Date(),
